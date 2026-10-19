@@ -32,7 +32,7 @@
 | 桌面入口（可选） | PyQt6、PyQt6-WebEngine |
 | 测试 | unittest、FastAPI TestClient/httpx、Node.js 前端逻辑检查 |
 
-无需 npm 安装或前端构建，页面资源由 FastAPI 直接提供。
+无需 npm 安装或前端构建，页面资源由 FastAPI 直接提供。所有 Python 依赖统一放在 `requirements.txt`，包含 Web 运行、接口测试和 PyQt 桌面入口所需依赖。
 
 ## 环境与外围软件
 
@@ -221,7 +221,7 @@ flowchart LR
 .\启动项目.bat --no-browser
 ```
 
-可选桌面入口：先安装 `requirements-desktop.txt`，再运行 `desktop_app.py`。该入口保留，但尚未做 PyQt 窗口验收。`/api/v1/health` 为兼容健康接口，模型 `configured` 仅代表配置存在；登录后的 `/api/v1/setup/status` 提供独立的环境检查，`POST /api/v1/setup/verify-model` 手动验证模型访问。
+可选桌面入口：安装统一的 `requirements.txt` 后运行 `desktop_app.py`，无需额外安装其他 requirements 文件。该入口保留，但尚未做 PyQt 窗口验收。`/api/v1/health` 为兼容健康接口，模型 `configured` 仅代表配置存在；登录后的 `/api/v1/setup/status` 提供独立的环境检查，`POST /api/v1/setup/verify-model` 手动验证模型访问。
 
 ## 推荐规则与数据范围
 
@@ -238,7 +238,7 @@ flowchart LR
 ## 测试
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 node tests/frontend_regression.cjs
 .\.venv\Scripts\python.exe scripts/check_secrets.py --history
@@ -263,9 +263,7 @@ tests/                   单元与前端回归
 storage/                 运行生成的本机SQLite，不随Git发布
 .env.example             无密码、无密钥的配置样例
 setting.yaml             通用默认配置
-requirements.txt         Web运行依赖
-requirements-dev.txt     测试依赖
-requirements-desktop.txt 可选PyQt桌面依赖
+requirements.txt         统一Python依赖（Web、测试与PyQt桌面入口）
 run_server.py            Web开发启动入口
 启动项目.bat             Windows Conda 环境双击启动入口
 desktop_app.py           可选桌面入口
