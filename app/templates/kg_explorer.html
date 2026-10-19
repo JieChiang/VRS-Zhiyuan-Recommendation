@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>知识图谱 - 高考志愿推荐系统</title>
+  <link rel="stylesheet" href="{{ static_url('styles.css') }}" />
+  <script src="{{ static_url('vendor/echarts/echarts.min.js') }}" defer></script>
+</head>
+<body class="page-kg_explorer">
+  {% include "_sidebar.html" %}
+
+  <div class="app-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-3);">
+        <button class="btn btn-ghost btn-sm mobile-nav-toggle" id="mobileNavToggle" title="菜单" aria-label="打开菜单"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+        <h1 class="page-title">知识图谱浏览器</h1>
+      </div>
+      <div class="topbar-actions">
+        <span class="chip chip-accent">交互式图谱</span>
+      </div>
+    </header>
+
+    <main id="mainContent" tabindex="-1" class="content content-full">
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">图谱控制面板</h2>
+        </div>
+        <div class="btn-group mb-3">
+          <input class="form-input" id="kgSearchInput" type="text" placeholder="搜索院校或专业..." style="max-width:260px;" />
+          <select class="form-select" id="kgNodeType" style="max-width:140px;">
+            <option value="all">全部节点</option>
+            <option value="institution">院校</option>
+            <option value="major">专业</option>
+          </select>
+          <button id="kgSearchBtn" class="btn btn-primary btn-sm">搜索</button>
+          <button id="kgResetBtn" class="btn btn-secondary btn-sm">重置视图</button>
+          <span id="kgNodeCount" class="chip chip-default"></span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">关系图谱</h2>
+          <span class="text-muted text-xs">拖拽与缩放 · 悬停查看名称和关系 · 点击查看详情</span>
+        </div>
+        <div style="position:relative;" id="kgGraphArea">
+          <div id="kgGraphEmpty" class="empty-state">
+            <div class="empty-icon">&#9711;</div>
+            <div class="empty-title">知识图谱可视化</div>
+            <div class="empty-description">搜索关键词以探索院校、专业与就业地区的关联关系</div>
+          </div>
+          <div id="kgGraphChart" class="chart" style="height:600px;"></div>
+        </div>
+      </section>
+
+      <section class="card" id="kgNodeDetailCard" style="display:none;">
+        <div class="card-header">
+          <h2 class="card-title" id="kgNodeDetailTitle">节点详情</h2>
+          <button id="kgCloseDetailBtn" class="btn btn-secondary btn-sm">关闭</button>
+        </div>
+        <div id="kgNodeDetailContent" class="box small"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <div id="refreshNotice" class="refresh-notice hidden">
+    信息变动，请刷新
+    <button id="refreshBtn" class="btn btn-secondary btn-sm">刷新</button>
+  </div>
+
+  <script src="{{ static_url('common.js') }}"></script>
+  <script src="{{ static_url('kg_explorer.js') }}"></script>
+</body>
+</html>

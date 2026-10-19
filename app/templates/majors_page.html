@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>专业介绍 - 高考志愿推荐系统</title>
+  <link rel="stylesheet" href="{{ static_url('styles.css') }}" />
+</head>
+<body class="page-majors_page">
+  {% include "_sidebar.html" %}
+
+  <!-- Main Area -->
+  <div class="app-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-3);">
+        <button class="btn btn-ghost btn-sm mobile-nav-toggle" id="mobileNavToggle" title="菜单" aria-label="打开菜单"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+        <h1 class="page-title">专业介绍</h1>
+      </div>
+      <div class="topbar-actions">
+        <button id="loadIntroBtn" class="btn btn-accent btn-sm">专业介绍</button>
+      </div>
+    </header>
+
+    <main id="mainContent" tabindex="-1" class="content content-grid-4">
+      <!-- L1 -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">一级专业</h2>
+        </div>
+        <div style="position:relative;" id="l1Area">
+          <div id="l1Empty" class="empty-state" style="padding:var(--space-6);">
+            <div class="empty-title">加载中...</div>
+          </div>
+          <div id="l1List" class="list"></div>
+        </div>
+      </section>
+
+      <!-- L2 -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">二级专业</h2>
+        </div>
+        <div style="position:relative;" id="l2Area">
+          <div id="l2Empty" class="empty-state" style="padding:var(--space-6);">
+            <div class="empty-description">请先选择一级专业</div>
+          </div>
+          <div id="l2List" class="list"></div>
+        </div>
+      </section>
+
+      <!-- L3 -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">三级专业</h2>
+        </div>
+        <div style="position:relative;" id="l3Area">
+          <div id="l3Empty" class="empty-state" style="padding:var(--space-6);">
+            <div class="empty-description">请先选择二级专业</div>
+          </div>
+          <div id="l3List" class="list"></div>
+        </div>
+      </section>
+
+      <!-- Selected + Intro -->
+      <section class="card">
+        <h2 class="card-title" style="margin-top:0;">已选专业</h2>
+        <div style="position:relative;" id="selectedArea">
+          <div id="selectedEmpty" class="empty-state" style="padding:var(--space-4);">
+            <div class="empty-description">点击三级专业的"选择"按钮添加</div>
+          </div>
+          <div id="selectedMajors" class="list"></div>
+        </div>
+        <h3 style="font-size:var(--font-size-base);font-weight:600;color:var(--color-text-heading);margin-top:var(--space-4);">专业介绍结果</h3>
+        <div style="position:relative;" id="introArea">
+          <div id="introEmpty" class="empty-state" style="padding:var(--space-6);">
+            <div class="empty-description">选择专业后点击"专业介绍"获取AI分析</div>
+          </div>
+          <div id="introResult" class="box small"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div id="refreshNotice" class="refresh-notice hidden">
+    信息变动，请刷新
+    <button id="refreshBtn" class="btn btn-secondary btn-sm">刷新</button>
+  </div>
+
+  <script src="{{ static_url('common.js') }}"></script>
+  <script src="{{ static_url('majors_page.js') }}"></script>
+</body>
+</html>

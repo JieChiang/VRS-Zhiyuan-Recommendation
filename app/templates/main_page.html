@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>规划工作台 - 高考志愿推荐系统</title>
+  <link rel="stylesheet" href="{{ static_url('styles.css') }}" />
+</head>
+<body class="page-main_page">
+  {% include "_sidebar.html" %}
+
+  <!-- Main Area -->
+  <div class="app-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-3);">
+        <button class="btn btn-ghost btn-sm mobile-nav-toggle" id="mobileNavToggle" title="菜单" aria-label="打开菜单">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <h1 class="page-title">规划工作台</h1>
+      </div>
+      <div class="topbar-actions">
+        <span id="healthBox" class="chip chip-default">检查中...</span>
+      </div>
+    </header>
+
+    <main id="mainContent" tabindex="-1" class="content">
+      <section class="workspace-intro" aria-labelledby="workspaceTitle">
+        <div><span class="eyebrow">你的志愿，从这里开始</span><h2 id="workspaceTitle">把每一次选择，规划得更清楚。</h2><p>填写成绩与偏好，生成冲稳保方案，再对比院校和专业。</p></div>
+        <a href="/recommend" class="btn btn-secondary">查看已有方案 →</a>
+      </section>
+      <p id="dataScopeStatus" class="field-help" role="status">正在读取浙江数据范围…</p>
+      <ol class="workflow-steps" aria-label="志愿规划流程">
+        <li class="current"><span>01</span><div><b>填写信息</b><small>成绩、位次与意向</small></div></li>
+        <li><span>02</span><div><b>生成推荐</b><small>按冲稳保查看方案</small></div></li>
+        <li><span>03</span><div><b>对比与选择</b><small>结合历史数据核实</small></div></li>
+      </ol>
+      <div class="content-grid dashboard-grid">
+
+        <!-- Left Column -->
+        <div style="display:flex;flex-direction:column;gap:var(--space-5);">
+
+          <!-- 基础信息 -->
+          <section class="card" aria-labelledby="basicInfoTitle">
+            <div class="card-header">
+              <div class="card-title-row">
+                <div class="card-section-indicator"></div>
+                <h2 class="card-title" id="basicInfoTitle">01 · 成绩与意向</h2>
+              </div>
+              <span id="draftStatus" class="chip chip-default" role="status">仅保存在本机</span>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="score">高考分数（选填）</label>
+                <input class="form-input" id="score" type="number" placeholder="请输入实际分数" min="0" step="1" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label-required" for="rank">高考位次</label>
+                <input class="form-input" id="rank" type="number" placeholder="请输入省内同科类位次" min="1" step="1" required autocomplete="off" aria-describedby="rankHint" />
+                <small class="field-help" id="rankHint">位次越小，排名越靠前。</small>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="year">参考数据年份</label>
+                <select class="form-select" id="year"><option value="2024">2024 年参考数据</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="subjectCombo">选考科目</label>
+                <input class="form-input" id="subjectCombo" type="text" placeholder="请填完整三门，如：物理、化学、生物" />
+              </div>
+            </div>
+            <p class="field-help">不限选科的专业对任何选科组合开放。只填一两门时，其余要求未确认的专业作探索候选；填全三门后排除明确不符合的要求。</p>
+            <hr class="section-divider" />
+            <div class="form-group">
+              <label class="form-label" for="majors">专业 / 领域（逗号分隔）</label>
+              <input class="form-input" id="majors" type="text" placeholder="计算机, 人工智能" />
+              <p class="field-help">可填专业或专业类，如英语、计算机、金融。填写“法学门类”可查看整个门类；填写“法学专业”只匹配该专业。师范只匹配原表明确标注师范的项目。</p>
+            </div>
+            <div class="form-group mt-3">
+              <label class="form-label" for="provinces">意向省份 / 城市（逗号分隔）</label>
+              <input class="form-input" id="provinces" type="text" placeholder="成都, 上海；也可填写四川等省份" />
+            </div>
+            <div class="form-group mt-3">
+              <label class="form-label" for="targets">目标院校（逗号分隔）</label>
+              <input class="form-input" id="targets" type="text" placeholder="清华大学, 北京大学" />
+            </div>
+          </section>
+
+          <!-- 推荐参数 -->
+          <section class="card" aria-labelledby="paramTitle">
+            <div class="card-header">
+              <div class="card-title-row">
+                <div class="card-section-indicator" style="background:var(--color-accent);"></div>
+                <h2 class="card-title" id="paramTitle">02 · 生成推荐方案</h2>
+              </div>
+            </div>
+            <details class="advanced-settings"><summary>调整推荐策略 <span class="text-muted">默认 80 条 · 冲稳保 3 : 4 : 3</span></summary>
+            <div class="form-grid-2 mt-3">
+              <div class="form-group">
+                <label class="form-label" for="candidateScope">候选检索范围</label>
+                <select class="form-select" id="candidateScope"><option value="all">全部符合条件的候选（推荐）</option><option value="window">仅限指定位次窗口</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rankWindow">位次窗口</label>
+                <input class="form-input" id="rankWindow" type="number" value="1000" min="50" max="100000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="targetCount">推荐总数</label>
+                <input class="form-input" id="targetCount" type="number" value="80" min="10" max="300" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ratio">冲 / 稳 / 保</label>
+                <input class="form-input" id="ratio" type="text" value="3,4,3" placeholder="3,4,3" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="extraNote">备注说明</label>
+                <input class="form-input" id="extraNote" type="text" placeholder="可选备注" />
+              </div>
+            </div>
+            <p class="field-help">默认查找全部符合地域、领域和选科的历史候选，再按位次排序。仅在选择“指定位次窗口”时限制位次范围；某层比例为 0 时不推荐该层，也不用它补足数量；三层不能同时为 0。</p>
+            </details>
+            <p class="field-help">按浙江历史位次生成候选。原表未注明批次和科类，计划选科要求也未按年区分，最终请核对当年招生章程。</p>
+            <div id="inputError" class="form-error hidden" role="alert"></div>
+            <div class="btn-group mt-4">
+              <button id="openRecommendBtn" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                生成志愿推荐
+              </button>
+              <button id="openMajorsBtn" class="btn btn-secondary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                专业介绍
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex;flex-direction:column;gap:var(--space-5);">
+
+          <!-- 以往成绩 -->
+          <details class="card supporting-card" aria-labelledby="mockExamTitle">
+            <summary class="supporting-summary"><span>模拟考成绩与优势分析</span><span class="text-muted">选填 · 展开录入</span></summary>
+            <div class="mt-4">
+            <div class="card-header">
+              <div class="card-title-row">
+                <div class="card-section-indicator" style="background:var(--color-secondary);"></div>
+                <h2 class="card-title" id="mockExamTitle">以往成绩</h2>
+              </div>
+              <div class="btn-group">
+                <button id="addTextRecordBtn" class="btn btn-secondary btn-sm">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  新增记录
+                </button>
+                <a href="/trajectory" class="btn btn-accent btn-sm">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  成绩轨迹
+                </a>
+              </div>
+            </div>
+            <div style="position:relative;" id="mockExamArea">
+              <div id="mockExamEmpty" class="empty-state">
+                <div class="empty-icon">
+                  <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <div class="empty-title">暂无成绩记录</div>
+                <div class="empty-description">点击"新增记录"添加模拟考成绩，支持上传成绩图片进行 OCR 识别</div>
+              </div>
+              <div id="mockExamList" class="list compact"></div>
+            </div>
+            <div class="btn-group mt-3">
+              <button id="formatMockBtn" class="btn btn-secondary">格式化输出（云端）</button>
+            </div>
+            <div class="form-group mt-3">
+              <label class="form-label" for="formattedMockText">格式化结果（可编辑确认）</label>
+              <textarea class="form-textarea" id="formattedMockText" placeholder="云端 AI 格式化后可在此手动修改确认..."></textarea>
+            </div>
+            <div class="btn-group mt-3">
+              <button id="analyzeMockBtn" class="btn btn-accent">优势专业 / 领域分析（云端）</button>
+            </div>
+            <div id="mockAnalyzeResult" class="box small mt-3" style="min-height:40px;"></div>
+            </div>
+          </details>
+
+          <!-- AI 对话 -->
+          <section class="card" aria-labelledby="chatTitle">
+            <div class="card-header">
+              <div class="card-title-row">
+                <div class="card-section-indicator" style="background:var(--color-accent);"></div>
+                <h2 class="card-title" id="chatTitle">智能问答</h2>
+              </div>
+              <span class="chip chip-accent">DeepSeek V4.1 Flash</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="question">你的问题</label>
+              <textarea class="form-textarea" id="question" rows="2" placeholder="例如：我的位次适合报考哪些院校？计算机专业就业前景如何？"></textarea>
+            </div>
+            <div class="btn-group mt-3">
+              <button id="askBtn" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                发送问题
+              </button>
+            </div>
+            <div style="position:relative;min-height:60px;" class="mt-3" id="chatArea">
+              <div id="chatEmpty" class="empty-state" style="padding:var(--space-6);">
+                <div class="empty-icon">
+                  <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                </div>
+                <div class="empty-description">输入问题后点击发送，AI 助手将为您分析解答</div>
+              </div>
+              <div id="chatResult" class="box small"></div>
+              <details id="chatSources" class="hidden mt-3">
+                <summary>查看本次检索的图谱资料</summary>
+                <div id="chatSourceList" class="box small mt-3"></div>
+              </details>
+            </div>
+            <p class="field-help">结合图谱历史资料生成建议，资料仅含浙江 2019–2024 年数据。发送的问题与成绩文本会交由 DeepSeek 分析。</p>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Refresh Notice -->
+  <div id="refreshNotice" class="refresh-notice hidden">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    数据已变动，建议刷新
+    <button id="refreshBtn" class="btn btn-primary btn-sm">刷新</button>
+  </div>
+
+  <script src="{{ static_url('common.js') }}"></script>
+  <script src="{{ static_url('main_page.js') }}"></script>
+</body>
+</html>

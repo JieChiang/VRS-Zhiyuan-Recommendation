@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>成绩轨迹 - 高考志愿推荐系统</title>
+  <link rel="stylesheet" href="{{ static_url('styles.css') }}" />
+  <script src="{{ static_url('vendor/echarts/echarts.min.js') }}" defer></script>
+</head>
+<body class="page-trajectory_page">
+  {% include "_sidebar.html" %}
+
+  <div class="app-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-3);">
+        <button class="btn btn-ghost btn-sm mobile-nav-toggle" id="mobileNavToggle" title="菜单" aria-label="打开菜单"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+        <h1 class="page-title">成绩轨迹预测</h1>
+      </div>
+      <div class="topbar-actions">
+        <span class="chip chip-success">趋势分析</span>
+      </div>
+    </header>
+
+    <main id="mainContent" tabindex="-1" class="content">
+      <div class="content-grid">
+        <!-- Left: Mock Exam Records -->
+        <section class="card" aria-labelledby="mockExamTitle">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-section-indicator" style="background:var(--color-secondary);"></div>
+              <h2 class="card-title" id="mockExamTitle">模拟考记录</h2>
+            </div>
+            <button id="addTextRecordBtn" class="btn btn-secondary btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              新增记录
+            </button>
+          </div>
+          <p class="card-subtitle">添加模拟考成绩记录，系统会自动提取分数用于轨迹预测</p>
+          <div style="position:relative;" id="mockExamArea">
+            <div id="mockExamEmpty" class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              </div>
+              <div class="empty-title">暂无成绩记录</div>
+              <div class="empty-description">点击"新增记录"添加模拟考成绩，支持上传成绩图片进行 OCR 识别</div>
+            </div>
+            <div id="mockExamList" class="list compact"></div>
+          </div>
+          <div class="btn-group mt-3">
+            <button id="formatMockBtn" class="btn btn-secondary">格式化输出（云端）</button>
+          </div>
+          <div class="form-group mt-3">
+            <label class="form-label" for="formattedMockText">格式化结果（可编辑确认）</label>
+            <textarea class="form-textarea" id="formattedMockText" placeholder="云端 AI 格式化后可在此手动修改确认..."></textarea>
+          </div>
+          <div class="btn-group mt-3">
+            <button id="analyzeMockBtn" class="btn btn-accent">优势专业 / 领域分析（云端）</button>
+          </div>
+          <div id="mockAnalyzeResult" class="box small mt-3" style="min-height:40px;"></div>
+        </section>
+
+        <!-- Right: Trajectory Chart -->
+        <section class="card" aria-labelledby="trajectoryTitle">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-section-indicator" style="background:var(--color-success);"></div>
+              <h2 class="card-title" id="trajectoryTitle">成绩轨迹预测</h2>
+            </div>
+            <button id="refreshTrajectoryBtn" class="btn btn-primary btn-sm">刷新图表</button>
+          </div>
+          <p class="card-subtitle">基于模拟考试成绩自动计算线性回归趋势线，预测后续考试分数区间</p>
+          <div style="position:relative;" id="trajectoryArea">
+            <div id="trajectoryEmpty" class="empty-state" style="padding:var(--space-6);">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="empty-title">数据不足</div>
+              <div class="empty-description">请先添加至少2条含分数的模拟考记录</div>
+            </div>
+            <div id="trajectoryChart" class="trajectory-chart"></div>
+          </div>
+          <div id="trajectorySummary" class="box small mt-3" style="display:none;"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <div id="refreshNotice" class="refresh-notice hidden">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    数据已变动，建议刷新
+    <button id="refreshBtn" class="btn btn-primary btn-sm">刷新</button>
+  </div>
+
+  <script src="{{ static_url('common.js') }}"></script>
+  <script src="{{ static_url('trajectory_page.js') }}"></script>
+</body>
+</html>

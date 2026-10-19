@@ -1,0 +1,34 @@
+<div class="sidebar-mobile-overlay" id="sidebarMobileOverlay"></div>
+<a class="skip-link" href="#mainContent">跳到主要内容</a>
+<aside class="sidebar" id="sidebar" aria-label="主导航">
+  <div class="sidebar-header">
+    <a href="/" class="logo" aria-label="高考志愿推荐首页">
+      <span class="logo-icon">VRS</span><span class="logo-text">志愿规划助手</span>
+    </a>
+    <button class="btn btn-ghost btn-sm" id="sidebarToggle" aria-label="折叠侧栏" aria-expanded="true" aria-controls="sidebar" title="折叠侧栏">☰</button>
+  </div>
+  <nav class="sidebar-nav" aria-label="功能导航">
+    <div class="nav-section">志愿规划</div>
+    {% for path, page, icon, label in [('/', 'main', '⌂', '规划工作台'), ('/recommend', 'recommend', '☆', '推荐院校'), ('/compare', 'compare', '⇄', '院校对比'), ('/majors', 'majors', '▤', '专业介绍')] %}
+    <a href="{{ path }}" class="nav-item" data-page="{{ page }}" title="{{ label }}">
+      <span class="nav-icon" aria-hidden="true">{{ icon }}</span><span class="nav-label">{{ label }}</span>
+      {% if page == 'compare' %}<span class="nav-badge" id="compareBadge" style="display:none;">0</span>{% endif %}
+    </a>
+    {% endfor %}
+    <div class="nav-section">探索与分析</div>
+    {% for path, page, icon, label in [('/trajectory', 'trajectory', '↗', '成绩轨迹'), ('/simulate', 'simulate', '◇', '模拟沙箱'), ('/kg-explorer', 'kg-explorer', '◎', '知识图谱')] %}
+    <a href="{{ path }}" class="nav-item" data-page="{{ page }}" title="{{ label }}">
+      <span class="nav-icon" aria-hidden="true">{{ icon }}</span><span class="nav-label">{{ label }}</span>
+    </a>
+    {% endfor %}
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-caption nav-label">以位次为起点，让选择更清晰</div>
+    <button class="nav-item" id="themeToggle" aria-label="切换主题" title="切换主题">
+      <span class="nav-icon" id="themeIcon" aria-hidden="true">☼</span><span class="nav-label">切换主题</span>
+    </button>
+    <form method="post" action="/logout">
+      <button type="submit" class="nav-item" title="退出登录"><span class="nav-icon" aria-hidden="true">↪</span><span class="nav-label">退出登录</span></button>
+    </form>
+  </div>
+</aside>

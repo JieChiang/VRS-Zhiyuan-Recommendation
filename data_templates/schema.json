@@ -1,0 +1,1146 @@
+{
+  "version": 1,
+  "synthetic_examples": true,
+  "applicant_province": "浙江",
+  "warning": "所有示例院校、录取、排名、满意度和就业均为合成，不用于真实报考；模板表头为当前导入器兼容格式。",
+  "workbooks": [
+    {
+      "filename": "2021排名_QS.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "榜单",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "排名",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "世界排名",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "所在省份",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "院校类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学性质",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "综合得分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "双一流",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "强基计划",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "985",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "211",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "QS",
+          100,
+          500,
+          "浙江",
+          "本科",
+          "理工",
+          "公办",
+          80,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "filename": "2021排名_U.S.News.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "榜单",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "排名",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "世界排名",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "所在省份",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "院校类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学性质",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "综合得分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "双一流",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "强基计划",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "985",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "211",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "U.S.News",
+          100,
+          500,
+          "浙江",
+          "本科",
+          "理工",
+          "公办",
+          80,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "filename": "2021排名_校友会.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "榜单",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "排名",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "世界排名",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "所在省份",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "院校类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学性质",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "综合得分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "双一流",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "强基计划",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "985",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "211",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "校友会",
+          100,
+          500,
+          "浙江",
+          "本科",
+          "理工",
+          "公办",
+          80,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "filename": "2021排名_泰晤士.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "榜单",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "排名",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "世界排名",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "所在省份",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "院校类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学性质",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "综合得分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "双一流",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "强基计划",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "985",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "211",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "泰晤士",
+          100,
+          500,
+          "浙江",
+          "本科",
+          "理工",
+          "公办",
+          80,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "filename": "2021软科排名总榜.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "榜单",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "排名",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "所在省份",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "院校类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学性质",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "综合得分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "双一流",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "强基计划",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "985",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "211",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "软科",
+          100,
+          "浙江",
+          "本科",
+          "理工",
+          "公办",
+          80,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "filename": "2022软科排名总榜.xlsx",
+      "sheet": "总榜",
+      "columns": [
+        {
+          "name": "2022排名",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "学校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "省市",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "学校类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "总得分",
+          "type": "number",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          100,
+          "示例理工大学(虚构)",
+          "浙江",
+          "理工",
+          80
+        ]
+      ]
+    },
+    {
+      "filename": "2023软科排名总榜.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "序号",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "学校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "排名",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "院校标签",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "地区",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "分数",
+          "type": "number",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          100,
+          "示例理工大学(虚构)",
+          100,
+          null,
+          "理工",
+          "浙江",
+          80
+        ]
+      ]
+    },
+    {
+      "filename": "专业分数线.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "专业名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "2019年最低分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "2019年最低位次",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2020年最低分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "2020年最低位次",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2021年最低分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "2021年最低位次",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2022年最低分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "2022年最低位次",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2023年最低分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "2023年最低位次",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2024年最低分",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "2024年最低位次",
+          "type": "integer",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "计算机科学与技术",
+          535,
+          115000,
+          537,
+          114000,
+          539,
+          113000,
+          541,
+          112000,
+          543,
+          111000,
+          545,
+          110000
+        ],
+        [
+          "示例理工大学(虚构)",
+          "物理学",
+          522,
+          125500,
+          524,
+          124500,
+          526,
+          123500,
+          528,
+          122500,
+          530,
+          121500,
+          532,
+          120500
+        ],
+        [
+          "示例理工大学(虚构)",
+          "会计学",
+          520,
+          130000,
+          522,
+          129000,
+          524,
+          128000,
+          526,
+          127000,
+          528,
+          126000,
+          530,
+          125000
+        ]
+      ]
+    },
+    {
+      "filename": "专业满意度.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "层次",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "专业名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "综合满意度",
+          "type": "number",
+          "required_header": true
+        },
+        {
+          "name": "综合满意度投票人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "就业满意度",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "就业满意度投票人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "教学质量满意度",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "教学质量满意度投票人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "办学条件满意度",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "办学条件满意度投票人数",
+          "type": "integer",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "本科",
+          "计算机科学与技术",
+          4.5,
+          100,
+          4.5,
+          100,
+          4.5,
+          100,
+          4.5,
+          100
+        ],
+        [
+          "示例理工大学(虚构)",
+          "本科",
+          "物理学",
+          4.5,
+          100,
+          4.5,
+          100,
+          4.5,
+          100,
+          4.5,
+          100
+        ],
+        [
+          "示例理工大学(虚构)",
+          "本科",
+          "会计学",
+          4.5,
+          100,
+          4.5,
+          100,
+          4.5,
+          100,
+          4.5,
+          100
+        ]
+      ]
+    },
+    {
+      "filename": "大学专业基础信息.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "一级专业代码",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "一级专业名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "二级专业代码",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "二级专业名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "三级专业代码",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "三级专业名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "类型",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "专业描述",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "授予学位",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "相近专业",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "08",
+          "工学",
+          "0809",
+          "计算机类",
+          "080901",
+          "计算机科学与技术",
+          "本科",
+          "用于系统演示的合成简介，请替换为真实来源资料。",
+          "学士",
+          ""
+        ],
+        [
+          "07",
+          "理学",
+          "0702",
+          "物理学类",
+          "070201",
+          "物理学",
+          "本科",
+          "用于系统演示的合成简介，请替换为真实来源资料。",
+          "学士",
+          ""
+        ],
+        [
+          "12",
+          "管理学",
+          "1202",
+          "工商管理类",
+          "120203K",
+          "会计学",
+          "本科",
+          "用于系统演示的合成简介，请替换为真实来源资料。",
+          "学士",
+          ""
+        ]
+      ]
+    },
+    {
+      "filename": "招生计划.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校代码",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "专业代码",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "专业名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "学制",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "学费",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "选考科目",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "备注",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "层次",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "办学性质",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "2020年计划人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2021年计划人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2022年计划人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2023年计划人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "2024年计划人数",
+          "type": "integer",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "99001",
+          "示例理工大学(虚构)",
+          "001",
+          "计算机科学与技术",
+          "四年",
+          "5000元/年（虚构）",
+          "物&化",
+          "合成示例，不是真实招生计划",
+          "本科",
+          "公办",
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        [
+          "99001",
+          "示例理工大学(虚构)",
+          "002",
+          "物理学",
+          "四年",
+          "5000元/年（虚构）",
+          "物",
+          "合成示例，不是真实招生计划",
+          "本科",
+          "公办",
+          11,
+          11,
+          11,
+          11,
+          11
+        ],
+        [
+          "99001",
+          "示例理工大学(虚构)",
+          "003",
+          "会计学",
+          "四年",
+          "5000元/年（虚构）",
+          "不限",
+          "合成示例，不是真实招生计划",
+          "本科",
+          "公办",
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      ]
+    },
+    {
+      "filename": "第四轮全国高校学科评估结果.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "一级学科",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "等级",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "院校代码及名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "门类",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "专业大类",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "学科等第",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "0812 计算机科学与技术",
+          "B",
+          "99001 示例理工大学(虚构)",
+          "工学",
+          "计算机",
+          "B"
+        ]
+      ]
+    },
+    {
+      "filename": "院校就业流向.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "省份",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "城市",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "毕业生签约地区流向",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "毕业生签约单位性质",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "主要签约单位",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "主要签约单位说明",
+          "type": "text",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "浙江",
+          "杭州市",
+          "示例理工大学(虚构)",
+          "浙江:70%;上海:30%",
+          "企业:80%;其他:20%",
+          "示例单位（虚构）",
+          "全部数据为合成示例"
+        ]
+      ]
+    },
+    {
+      "filename": "院校满意度.xlsx",
+      "sheet": "数据",
+      "columns": [
+        {
+          "name": "院校名称",
+          "type": "text",
+          "required_header": true
+        },
+        {
+          "name": "院校所在地",
+          "type": "text",
+          "required_header": false
+        },
+        {
+          "name": "综合满意度",
+          "type": "number",
+          "required_header": true
+        },
+        {
+          "name": "综合满意度投票人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "环境满意度",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "生活满意度投票人数",
+          "type": "integer",
+          "required_header": false
+        },
+        {
+          "name": "生活满意度",
+          "type": "number",
+          "required_header": false
+        },
+        {
+          "name": "环境满意度投票人数",
+          "type": "integer",
+          "required_header": false
+        }
+      ],
+      "rows": [
+        [
+          "示例理工大学(虚构)",
+          "浙江",
+          4.5,
+          100,
+          4.4,
+          90,
+          4.3,
+          95
+        ]
+      ]
+    }
+  ]
+}

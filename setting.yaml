@@ -1,0 +1,26 @@
+neo4j:
+  url: "http://127.0.0.1:7474"
+  database: "neo4j"
+  username: "neo4j"
+  password: ""
+
+# 你可以只填写 apikey，也可以使用 deepseek.api_key
+apikey: ""
+
+deepseek:
+  api_key: ""
+  base_url: "https://api.deepseek.com"
+  model: "deepseek-flash"
+  timeout: 90
+
+ollama:
+  base_url: "http://localhost:11434/v1"
+  model: "deepseek-r1:8b"
+  timeout: 90
+
+ocr:
+  tesseract_cmd: "tesseract"
+
+app:
+  host: "127.0.0.1"
+  port: 8000

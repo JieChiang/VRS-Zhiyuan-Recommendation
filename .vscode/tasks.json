@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "VRS: 启动服务", "type": "shell", "command": "python", "args": ["run_server.py"], "problemMatcher": [] },
+    { "label": "VRS: 回归测试", "type": "shell", "command": "python", "args": ["-m", "unittest", "discover", "-s", "tests", "-v"], "problemMatcher": [] },
+    { "label": "VRS: 原始数据样例", "type": "shell", "command": "python", "args": ["scripts/rebuild_graph.py", "--sample", "3"], "problemMatcher": [] }
+  ]
+}

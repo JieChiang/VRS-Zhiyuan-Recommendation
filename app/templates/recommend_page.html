@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>推荐院校 - 高考志愿推荐系统</title>
+  <link rel="stylesheet" href="{{ static_url('styles.css') }}" />
+  <script src="{{ static_url('vendor/echarts/echarts.min.js') }}" defer></script>
+</head>
+<body class="page-recommend_page">
+  {% include "_sidebar.html" %}
+
+  <!-- Main Area -->
+  <div class="app-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-3);">
+        <button class="btn btn-ghost btn-sm mobile-nav-toggle" id="mobileNavToggle" title="菜单" aria-label="打开菜单"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+        <h1 class="page-title">推荐院校</h1>
+      </div>
+      <div class="topbar-actions">
+        <button id="openCompareBtn" class="btn btn-accent btn-sm">院校对比</button>
+      </div>
+    </header>
+
+    <main id="mainContent" tabindex="-1" class="content content-full">
+      <p class="page-description">先看冲稳保分布，再筛选专业与院校，加入对比后查看历年趋势。</p>
+      <p class="field-help">当前为浙江生源示例；选科按可匹配的计划原文筛选，未知要求待核实。原表未注明科类和批次，历史位次与模型概率仅作参考。</p>
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tabRecommendList">推荐列表</button>
+        <button class="tab-btn" data-tab="tabAnalyze">智能分析</button>
+        <button class="tab-btn" data-tab="tabOptimize">策略优化</button>
+      </div>
+
+      <!-- Tab: 推荐列表 -->
+      <div class="tab-panel active" id="tabRecommendList">
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">推荐列表</h2>
+            <div class="btn-group">
+              <button id="regenerateBtn" class="btn btn-primary btn-sm">按当前条件重新生成</button>
+              <button id="loadProbabilityBtn" class="btn btn-accent btn-sm">计算录取概率</button>
+              <button id="loadPeerBtn" class="btn btn-secondary btn-sm">候选分布分析</button>
+            </div>
+          </div>
+          <div id="recommendMeta" class="recommend-summary" aria-label="推荐统计"></div>
+          <div id="recommendDiagnostics" class="box small mb-3" role="status"></div>
+          <details id="pendingCandidates" class="hidden mb-3"><summary id="pendingCandidatesTitle">选科资料待核实的历史记录</summary><div id="pendingCandidatesList" class="box small mt-3"></div></details>
+          <div id="probabilitySummary" class="box small mb-3" style="display:none;"></div>
+          <div class="recommend-toolbar">
+            <div class="form-group"><label class="form-label" for="recommendSearch">搜索院校 / 专业</label><input id="recommendSearch" class="form-input" type="search" placeholder="输入关键词筛选当前结果" /></div>
+            <div class="form-group"><label class="form-label" for="layerFilter">推荐层次</label><select id="layerFilter" class="form-select"><option value="">全部层次</option><option value="冲">冲刺</option><option value="稳">稳妥</option><option value="保">保底</option></select></div>
+          </div>
+          <div class="btn-group mb-3" id="filterGroup">
+            <button id="filterCollege" class="btn btn-sm btn-secondary">只看专科</button>
+            <button id="filterBachelor" class="btn btn-sm btn-secondary">只看本科</button>
+            <button id="filterPublic" class="btn btn-sm btn-secondary">只看公办</button>
+            <button id="filterPrivate" class="btn btn-sm btn-secondary">只看民办</button>
+            <button id="resetFilters" class="btn btn-sm btn-ghost">清除筛选</button>
+          </div>
+          <p id="recommendCount" role="status" aria-live="polite"></p>
+          <div style="position:relative;" id="recommendListArea">
+            <div id="recommendEmpty" class="empty-state">
+              <div class="empty-icon">&#128270;</div>
+              <div class="empty-title">暂无推荐结果</div>
+              <div class="empty-description">请先在控制台生成推荐数据</div>
+              <div class="empty-action">
+                <a href="/" class="btn btn-primary btn-sm">前往控制台</a>
+              </div>
+            </div>
+            <div id="recommendList" class="list"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tab: 智能分析 -->
+      <div class="tab-panel" id="tabAnalyze">
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">同位次候选分析</h2>
+            <button id="refreshPeerBtn" class="btn btn-primary btn-sm">刷新分析</button>
+          </div>
+          <div style="position:relative;" id="peerArea">
+            <div id="peerEmpty" class="empty-state">
+              <div class="empty-description">点击"刷新分析"查看同位次范围内的历史录取候选统计</div>
+            </div>
+            <div id="peerResult">
+              <h3>专业候选分布</h3>
+              <div id="peerMajors" class="box small mb-3"></div>
+              <h3>院校所在地分布</h3>
+              <div id="peerProvinces" class="box small mb-3"></div>
+              <h3>位次分布</h3>
+              <div id="peerDistribution" class="box small"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card mt-4">
+          <div class="card-header">
+            <h2 class="card-title">专业就业市场分析</h2>
+            <button id="runMarketAnalysisBtn" class="btn btn-accent btn-sm">AI市场分析</button>
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label" for="marketAnalysisMajors">分析专业（逗号分隔，留空使用推荐中的专业）</label>
+            <input class="form-input" id="marketAnalysisMajors" type="text" placeholder="计算机科学与技术,人工智能" />
+          </div>
+          <div style="position:relative;" id="marketAnalysisArea">
+            <div id="marketEmpty" class="empty-state">
+              <div class="empty-description">点击"AI市场分析"获取所选专业的就业市场前景</div>
+            </div>
+            <div id="marketRadarChart" class="radar-chart"></div>
+            <div id="marketDetail" class="box small mt-3"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tab: 策略优化 -->
+      <div class="tab-panel" id="tabOptimize">
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">智能策略优化器</h2>
+            <span class="chip chip-accent">偏好加权 + 分层配额</span>
+          </div>
+          <p class="text-muted text-xs">根据历史位次接近程度、院校层次、专业偏好和计划数排序，再按冲稳保比例选取。权重分数不是录取概率。</p>
+          <div class="form-group mt-3">
+            <label class="form-label" for="optimizePrefs">偏好加权（格式：关键词=权重，逗号分隔，如"计算机=2,北京=1.5"）</label>
+            <input class="form-input" id="optimizePrefs" type="text" placeholder="计算机=2,北京=1.5,公办=1" />
+          </div>
+          <div class="btn-group mt-3">
+            <button id="runOptimizeBtn" class="btn btn-primary">运行优化</button>
+          </div>
+          <div id="optimizeResult" class="optimizer-panel" style="display:none;">
+            <h3>优化结果</h3>
+            <div id="optimizeMeta" class="box small mb-3"></div>
+            <div id="optimizeList" class="list"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Detail Drawer Overlay -->
+  <div id="drawerOverlay" class="drawer-overlay hidden"></div>
+
+  <!-- Detail Drawer -->
+  <div id="detailDrawer" class="detail-drawer hidden" role="dialog" aria-modal="true" aria-labelledby="detailTitle" tabindex="-1">
+    <div class="detail-header">
+      <h2 id="detailTitle">院校专业详情</h2>
+      <button id="closeDetailBtn" class="btn btn-secondary btn-sm">关闭</button>
+    </div>
+    <div class="detail-content">
+      <div class="box small" id="detailText"></div>
+      <h3>各类排名</h3>
+      <div class="box small table-wrap" id="detailRanking"></div>
+      <h3>学科评级</h3>
+      <div class="box small table-wrap" id="detailSubjectEval"></div>
+      <h3>院校满意度（截断柱状图）</h3>
+      <div id="instSatChart" class="chart"></div>
+      <h3>专业满意度（截断柱状图）</h3>
+      <div id="majorSatChart" class="chart"></div>
+      <h3>就业情况（饼状图）</h3>
+      <div id="employmentChart" class="chart"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Refresh Notice -->
+  <div id="refreshNotice" class="refresh-notice hidden">
+    信息变动，请刷新
+    <button id="refreshBtn" class="btn btn-secondary btn-sm">刷新</button>
+  </div>
+
+  <script src="{{ static_url('common.js') }}"></script>
+  <script src="{{ static_url('recommend_page.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>院校对比 - 高考志愿推荐系统</title>
+  <link rel="stylesheet" href="{{ static_url('styles.css') }}" />
+  <script src="{{ static_url('vendor/echarts/echarts.min.js') }}" defer></script>
+</head>
+<body class="page-compare_page">
+  {% include "_sidebar.html" %}
+
+  <!-- Main Area -->
+  <div class="app-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-3);">
+        <button class="btn btn-ghost btn-sm mobile-nav-toggle" id="mobileNavToggle" title="菜单" aria-label="打开菜单"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+        <h1 class="page-title">院校对比</h1>
+      </div>
+    </header>
+
+    <main id="mainContent" tabindex="-1" class="content content-full">
+      <!-- Selected Items -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">对比院校</h2>
+          <button id="refreshCompareBtn" class="btn btn-primary btn-sm">加载对比信息</button>
+        </div>
+        <div style="position:relative;" id="compareListArea">
+          <div id="compareEmpty" class="empty-state">
+            <div class="empty-icon">&#8646;</div>
+            <div class="empty-title">未选择对比院校</div>
+            <div class="empty-description">请先在推荐页面将院校加入对比列表</div>
+            <div class="empty-action">
+              <a href="/recommend" class="btn btn-primary btn-sm">前往推荐</a>
+            </div>
+          </div>
+          <div id="compareSelected" class="list"></div>
+        </div>
+      </section>
+
+      <!-- Charts -->
+      <section class="card" id="compareChartsCard">
+        <div class="card-header">
+          <h2 class="card-title">对比分析</h2>
+        </div>
+        <div style="position:relative;" id="compareChartsArea">
+          <div id="compareChartsEmpty" class="empty-state">
+            <div class="empty-title">请选择院校并点击"加载对比信息"</div>
+            <div class="empty-description">对比图表将在此处展示</div>
+          </div>
+          <div class="compare-chart-block">
+            <h3 class="chart-title">历年计划人数</h3>
+            <div id="planChart" class="chart"></div>
+          </div>
+          <div class="compare-chart-block">
+            <h3 class="chart-title">历年专业最低分</h3>
+            <div id="scoreChart" class="chart"></div>
+          </div>
+          <div class="compare-chart-block">
+            <div class="chart-title-row">
+              <h3 class="chart-title">历年专业最低位次（Y轴反转）</h3>
+              <span class="chart-tip-inline">提示：位次越小越靠前，Y轴已反转，越靠上代表位次更好</span>
+            </div>
+            <div id="rankTrendChart" class="chart"></div>
+          </div>
+          <h3 class="chart-title" style="margin-top:var(--space-4);">满意度对比</h3>
+          <div class="compare-chart-block">
+            <h3 class="chart-title">院校满意度（截断图）</h3>
+            <div id="instSatChart" class="chart"></div>
+          </div>
+          <div class="compare-chart-block">
+            <h3 class="chart-title">专业满意度（截断图）</h3>
+            <div id="majorSatChart" class="chart"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div id="refreshNotice" class="refresh-notice hidden">
+    信息变动，请刷新
+    <button id="refreshBtn" class="btn btn-secondary btn-sm">刷新</button>
+  </div>
+
+  <script src="{{ static_url('common.js') }}"></script>
+  <script src="{{ static_url('compare_page.js') }}"></script>
+</body>
+</html>
