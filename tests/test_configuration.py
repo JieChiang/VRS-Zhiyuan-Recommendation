@@ -27,6 +27,7 @@ class ConfigurationTests(unittest.TestCase):
         with patch("app.services.configuration.urlopen") as request:
             result = self.checks(deepseek_api_key="").verify_model()
             self.assertFalse(result["configured"])
+            self.assertFalse(result["available"])
             self.assertEqual(result["state"], "missing")
             request.assert_not_called()
 
@@ -34,6 +35,7 @@ class ConfigurationTests(unittest.TestCase):
         result = self.checks().model()
         self.assertTrue(result["configured"])
         self.assertFalse(result["verified"])
+        self.assertIsNone(result["available"])
         self.assertNotIn("example-only", json.dumps(result))
 
     def test_model_verification_only_reads_model_list_and_is_cached(self):
@@ -41,7 +43,9 @@ class ConfigurationTests(unittest.TestCase):
         response.__enter__.return_value.read.return_value = json.dumps({"data": [{"id": "deepseek-flash"}]}).encode()
         checks = self.checks()
         with patch("app.services.configuration.urlopen", return_value=response) as request:
-            self.assertTrue(checks.verify_model()["verified"])
+            verified = checks.verify_model()
+            self.assertTrue(verified["verified"])
+            self.assertTrue(verified["available"])
             self.assertTrue(checks.verify_model()["verified"])
             self.assertEqual(request.call_count, 1)
             sent = request.call_args.args[0]
@@ -56,12 +60,14 @@ class ConfigurationTests(unittest.TestCase):
             result = self.checks().verify_model()
         self.assertEqual(result["state"], "warning")
         self.assertFalse(result["verified"])
+        self.assertFalse(result["available"])
 
     def test_upstream_error_does_not_echo_credentials(self):
         for error in [HTTPError("https://invalid", 401, "example-only", {}, io.BytesIO()), RuntimeError("example-only")]:
             with patch("app.services.configuration.urlopen", side_effect=error):
                 result = self.checks().verify_model()
             self.assertEqual(result["state"], "error")
+            self.assertFalse(result["available"])
             self.assertNotIn("example-only", json.dumps(result))
 
     def test_neo4j_distinguishes_empty_importing_and_ready_graphs(self):

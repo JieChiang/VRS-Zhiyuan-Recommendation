@@ -62,10 +62,10 @@ class ConfigurationChecks:
     def model(self):
         base = {"name": "DeepSeek API Key", "required_for": "AI 问答及分析", "docs_url": "https://platform.deepseek.com/", "configured": bool(self.settings.deepseek_api_key.strip())}
         if not base["configured"]:
-            return dict(base, state="missing", verified=False, title="API Key 未填写", detail="在本机 .env 填写 DEEPSEEK_API_KEY 后重启服务。推荐与图谱查询无需模型 Key；请勿将 Key 提交到 Git。")
+            return dict(base, state="missing", available=False, verified=False, title="API Key 未填写", detail="在本机 .env 填写 DEEPSEEK_API_KEY 后重启服务。推荐与图谱查询无需模型 Key；请勿将 Key 提交到 Git。")
         if self._model and time.monotonic() - self._model_checked < 300:
-            return dict(base, **self._model)
-        return dict(base, state="warning", verified=False, title="API Key 已填写，尚未验证", detail="点击“验证 API 连接”检查认证与所配置模型是否可见；不会发送成绩或调用文本生成。")
+            return dict(base, available=self._model["verified"], **self._model)
+        return dict(base, state="warning", available=None, verified=False, title="API Key 已填写，尚未验证", detail="点击“验证 API 连接”检查认证与所配置模型是否可见；不会发送成绩或调用文本生成。")
 
     def verify_model(self):
         with self._lock:

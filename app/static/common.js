@@ -382,9 +382,9 @@ function initConfigurationChecks() {
   const verify = document.getElementById("configurationVerify");
   const banner = document.createElement("div");
   banner.className = "configuration-banner";
+  banner.hidden = true;
   banner.setAttribute("role", "status");
   const summary = document.createElement("span");
-  summary.textContent = "正在检查 API Key 与外围软件配置…";
   const open = document.createElement("button");
   open.className = "btn btn-ghost btn-sm";
   open.textContent = "查看配置";
@@ -418,10 +418,16 @@ function initConfigurationChecks() {
       items.append(section);
     });
     const model = components.deepseek;
-    const good = status.data_ready && model.verified && components.ocr.ready;
-    summary.textContent = (status.data_ready ? "图谱已就绪" : "图谱需配置") + " · " + (model.verified ? "API 验证通过" : model.state === "error" ? "API 连接待修复" : model.configured ? "API Key 已填写（待验证）" : "API Key 未填写") + " · " + (components.ocr.ready ? "OCR 可用" : "OCR 待配置（可选）");
-    badge.textContent = good ? "环境配置可用" : "环境与 API 配置";
-    banner.classList.toggle("configuration-warning", !status.data_ready || !model.configured);
+    // An unverified Key is unknown, rather than evidence of an unavailable API.
+    const unavailable = [
+      !status.data_ready ? components.neo4j : null,
+      !model.configured || model.available === false || model.state === "error" ? model : null,
+      !components.ocr.ready ? components.ocr : null,
+    ].filter(Boolean);
+    summary.textContent = unavailable.map((component) => component.title).join(" · ");
+    banner.hidden = unavailable.length === 0;
+    badge.textContent = "环境与 API 配置";
+    banner.classList.toggle("configuration-warning", unavailable.length > 0);
     verify.disabled = !model.configured;
   }
   async function load() {
@@ -432,6 +438,8 @@ function initConfigurationChecks() {
     } catch (error) {
       badge.textContent = "配置检查失败";
       summary.textContent = "环境检查失败，请查看配置。";
+      banner.hidden = false;
+      banner.classList.toggle("configuration-warning", true);
       items.textContent = error.message;
     } finally { refresh.disabled = false; }
   }

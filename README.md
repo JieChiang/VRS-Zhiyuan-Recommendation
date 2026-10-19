@@ -105,7 +105,7 @@ Copy-Item .env.example .env
 
 ### 首次启动必须检查的配置
 
-登录后，每个业务页面顶部和侧栏均有“环境与 API 配置”入口。系统会实际检查数据库连接、对应图谱是否就绪、Tesseract 能否运行及 `chi_sim` / `eng` 是否安装。检查结果缓存 30 秒；修改 `.env` 后需重启服务。
+登录后，系统会实际检查数据库连接、对应图谱是否就绪、Tesseract 能否运行及 `chi_sim` / `eng` 是否安装。**仅检测到配置缺失或不可用时，页面顶部才显示相关问题；配置正常时不显示提示。**侧栏保留“环境与 API 配置”入口，供手动查看详情和验证 API。已填写但尚未验证的 Key 不作为故障提示；模型验证失败或配置不匹配时会提示。检查结果缓存 30 秒；修改 `.env` 后需重启服务。
 
 | 页面状态 | 处理方式 / 影响 |
 | --- | --- |
@@ -210,6 +210,17 @@ flowchart LR
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765
 ```
 
+### Windows 双击启动（已有 Conda 环境）
+
+双击根目录的 `启动项目.bat`。脚本默认激活 `D:\Software\Miniconda3\envs\VRS`，使用该环境的 Python 检查依赖，缺少依赖时按 `requirements.txt` 安装，再启动项目并在页面就绪后自动打开 `http://127.0.0.1:8765`。这套启动方式另在 Python 3.11.15 的 Conda 环境验证通过。
+
+其他机器需要把 BAT 中的 `VRS_CONDA_ENV` 和 Miniconda `activate.bat` 路径改为自己的安装位置。请先启动 Neo4j，配置自己的数据库密码与 API Key；BAT 不包含凭据、不修改私有配置，也不会自动启动 Neo4j。重复双击会复用已运行的 VRS 服务；端口被其他程序占用时会提示错误。关闭首次启动的控制台窗口或按 Ctrl+C 可停止 Web 服务。
+
+```powershell
+# 可选：仅启动服务，不自动打开浏览器
+.\启动项目.bat --no-browser
+```
+
 可选桌面入口：先安装 `requirements-desktop.txt`，再运行 `desktop_app.py`。该入口保留，但尚未做 PyQt 窗口验收。`/api/v1/health` 为兼容健康接口，模型 `configured` 仅代表配置存在；登录后的 `/api/v1/setup/status` 提供独立的环境检查，`POST /api/v1/setup/verify-model` 手动验证模型访问。
 
 ## 推荐规则与数据范围
@@ -256,6 +267,7 @@ requirements.txt         Web运行依赖
 requirements-dev.txt     测试依赖
 requirements-desktop.txt 可选PyQt桌面依赖
 run_server.py            Web开发启动入口
+启动项目.bat             Windows Conda 环境双击启动入口
 desktop_app.py           可选桌面入口
 ```
 

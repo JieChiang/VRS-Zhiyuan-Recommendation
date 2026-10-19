@@ -210,20 +210,6 @@ async function analyzeMockExams() {
   btn.textContent = "优势专业 / 领域分析（云端）";
 }
 
-async function health() {
-  try {
-    const data = await api("/api/v1/health");
-    const box = $("healthBox");
-    box.textContent = data.deepseek_cloud?.configured ? "数据已连接 · API Key 已填写" : "数据已连接 · API Key 未填写";
-    box.title = "此状态表示密钥已配置；发送问题时会实际调用模型。";
-    box.className = data.deepseek_cloud?.configured ? "chip chip-success" : "chip chip-warning";
-  } catch (e) {
-    $("healthBox").textContent = "数据服务连接异常";
-    $("healthBox").title = e.message;
-    $("healthBox").className = "chip chip-error";
-  }
-}
-
 async function openRecommendPage() {
   if (!validateMainInput()) return;
   const mainInput = collectMainInput();
@@ -320,11 +306,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     [STORAGE_KEYS.compareList, STORAGE_KEYS.selectedMajors, STORAGE_KEYS.recommendResult],
     async () => {
       fillMainInput(getState(STORAGE_KEYS.mainInput, null));
-      await health();
     }
   );
   $("chatResult").classList.add("hidden");
-  health();
   loadDataScope();
   $("formattedMockText").value = getState("vrs.mockFormatted", "");
   $("mockAnalyzeResult").textContent = getState("vrs.mockAnalysis", "");
