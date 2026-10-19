@@ -214,7 +214,7 @@ async function health() {
   try {
     const data = await api("/api/v1/health");
     const box = $("healthBox");
-    box.textContent = data.deepseek_cloud?.configured ? `数据服务可用 · ${data.deepseek_cloud.display_name || data.deepseek_cloud.model}` : "数据服务可用 · AI 未配置";
+    box.textContent = data.deepseek_cloud?.configured ? "数据已连接 · API Key 已填写" : "数据已连接 · API Key 未填写";
     box.title = "此状态表示密钥已配置；发送问题时会实际调用模型。";
     box.className = data.deepseek_cloud?.configured ? "chip chip-success" : "chip chip-warning";
   } catch (e) {

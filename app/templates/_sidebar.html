@@ -24,6 +24,9 @@
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-caption nav-label">以位次为起点，让选择更清晰</div>
+    <button class="nav-item" id="configurationOpen" title="环境与 API 配置" aria-controls="configurationDialog">
+      <span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label" id="configurationBadge">检查环境配置…</span>
+    </button>
     <button class="nav-item" id="themeToggle" aria-label="切换主题" title="切换主题">
       <span class="nav-icon" id="themeIcon" aria-hidden="true">☼</span><span class="nav-label">切换主题</span>
     </button>
@@ -32,3 +35,17 @@
     </form>
   </div>
 </aside>
+<dialog id="configurationDialog" class="configuration-dialog" aria-labelledby="configurationTitle">
+  <div class="configuration-heading">
+    <h2 id="configurationTitle">环境与 API 配置</h2>
+    <button class="btn btn-ghost btn-sm" id="configurationClose" aria-label="关闭配置检查">关闭 ×</button>
+  </div>
+  <p class="field-help">检查本机数据库、API Key 与 OCR。修改 .env 后，请重启服务。密钥只在服务端读取，页面不显示其内容。</p>
+  <div id="configurationItems" class="configuration-items" role="status" aria-live="polite">正在检查…</div>
+  <div class="configuration-actions">
+    <button class="btn btn-secondary" id="configurationRefresh">重新检查环境</button>
+    <button class="btn btn-primary" id="configurationVerify">验证 API 连接</button>
+  </div>
+  <p class="field-help" id="configurationHint">API 验证仅读取模型列表，不发送成绩或生成文本。环境检查缓存 30 秒。</p>
+  <p class="field-help">图谱未导入时：在项目根目录执行 <code>python scripts/graph_snapshot.py import</code>，详见 README。OCR 可选；当前云端流程无需安装 Ollama。</p>
+</dialog>

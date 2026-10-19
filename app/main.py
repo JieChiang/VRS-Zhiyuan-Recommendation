@@ -32,6 +32,7 @@ from app.models import (
 from app.neo4j_http import Neo4jHttpClient
 from app.services.deepseek_cloud import DeepSeekCloudService, ModelServiceError
 from app.services.deepseek_local import OllamaService
+from app.services.configuration import ConfigurationChecks
 from app.services.kg_service import KgService
 from app.services.recommender import RecommenderService
 from app.storage import LocalStorage
@@ -69,6 +70,7 @@ ollama_service = OllamaService(
     model=settings.ollama_model,
     timeout=settings.ollama_timeout,
 )
+configuration_checks = ConfigurationChecks(settings)
 
 
 @app.exception_handler(ModelServiceError)
@@ -176,6 +178,20 @@ def health() -> Dict[str, Any]:
         },
         "ocr": {"tesseract_cmd": settings.tesseract_cmd},
     }
+
+
+@app.get("/api/v1/setup/status")
+def setup_status(request: Request) -> Dict[str, Any]:
+    if not is_login(request):
+        raise HTTPException(status_code=401, detail="请先登录")
+    return configuration_checks.status()
+
+
+@app.post("/api/v1/setup/verify-model")
+def setup_verify_model(request: Request) -> Dict[str, Any]:
+    if not is_login(request):
+        raise HTTPException(status_code=401, detail="请先登录")
+    return configuration_checks.verify_model()
 
 
 @app.get("/api/v1/data/scope")

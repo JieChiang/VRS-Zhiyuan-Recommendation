@@ -2,7 +2,7 @@
 
 基于 **FastAPI、Neo4j 知识图谱与 DeepSeek** 的高考志愿规划示例系统。当前业务范围是**浙江生源、2019–2024 年历史录取参考**。用户输入位次、选科、专业领域和意向省市，生成冲稳保候选，并查看来源、历年趋势及 AI 辅助分析。
 
-公开仓库包含代码、环境配置样例及 **14 份可填写的 Excel 合成示例模板**，不包含真实原始招生资料、考生成绩、数据库文件、API 密钥或本机凭据。
+公开仓库包含代码、环境配置样例、**14 份 Excel 合成示例模板**，以及从本地已构建 Neo4j 导出的**完整浙江历史知识图谱快照**。克隆后可直接导入，无需先收集原始 Excel。快照包含公开招生事实及其来源，不包含考生成绩、SQLite、数据库账户、密码或 API Key；真实原始 Excel 不随仓库分发。
 
 ## 功能
 
@@ -16,6 +16,7 @@
 | 模拟沙箱 | 改变位次和偏好，比较两份候选方案 |
 | 知识图谱 | 探索院校、招生项目、标准专业、专业类、门类及就业流向关系 |
 | 本地策略 | SQLite 策略保存、回收站与恢复，浏览器 localStorage 草稿与对比状态 |
+| 环境检查 | 所有业务页面显示 API Key 是否填写、Neo4j 与图谱就绪状态、OCR 程序及中英文语言包；可手动验证 API 认证与模型配置 |
 
 ## 技术栈
 
@@ -100,9 +101,51 @@ Copy-Item .env.example .env
 
 配置优先级：**已有进程环境变量 → `VRS_ENV_FILE` 指向的文件 → 项目 `.env` → 用户私有配置 → `setting.yaml` → 默认值**。用户私有配置为 Windows `%APPDATA%/VRS/private.env`，其他系统为 `~/.config/VRS/private.env`。修改配置后重启服务。
 
-`.env`、私有配置、SQLite、真实原始数据、dump、日志及本机交接报告不进入 Git。`setting.yaml` 只保留无密钥的通用示例。不要把密钥写在 Python、JavaScript 或 README 中。
+`.env`、私有配置、SQLite、真实原始 Excel、原生 dump、日志及本机交接报告不进入 Git。**专门审查过的 `graph_snapshot/` 逻辑快照随仓库分发**。`setting.yaml` 只保留无密钥的通用示例。不要把密钥写在 Python、JavaScript 或 README 中。
 
-## 构建知识图谱
+### 首次启动必须检查的配置
+
+登录后，每个业务页面顶部和侧栏均有“环境与 API 配置”入口。系统会实际检查数据库连接、对应图谱是否就绪、Tesseract 能否运行及 `chi_sim` / `eng` 是否安装。检查结果缓存 30 秒；修改 `.env` 后需重启服务。
+
+| 页面状态 | 处理方式 / 影响 |
+| --- | --- |
+| 数据库密码未填写 / 连接失败 | 填写 `NEO4J_PASSWORD`，启动 Neo4j，核对 HTTP 地址、数据库名、用户名及密码；图谱相关功能需要它 |
+| 数据库已连接，图谱未导入 / 尚未就绪 | 按下一节导入快照，或从 Excel 构建；完成后重新检查 |
+| API Key 未填写 | 在本机 `.env` 填写 `DEEPSEEK_API_KEY` 并重启；AI 问答与分析需要 Key，规则推荐与图谱查询不需要 |
+| API Key 已填写，尚未验证 | 点击“验证 API 连接”；填写不代表认证成功 |
+| API 认证成功，模型可见 | Key 与配置的模型已通过模型列表验证；实际生成仍受额度、服务状态影响 |
+| API 认证失败 / 模型配置不匹配 | 检查平台 Key、`DEEPSEEK_BASE_URL`、`DEEPSEEK_MODEL`；界面不会显示 Key 内容 |
+| OCR 未安装 / 语言包不完整 | 安装 Tesseract 与中英文语言包；只影响成绩图片识别，不影响文字录入或推荐 |
+
+API 验证使用官方 [`GET /models`](https://api-docs.deepseek.com/zh-cn/api/list-models/)，只在点击按钮时请求，不发送成绩或调用文本生成。认证结果缓存最多 5 分钟，按钮连续操作限于每 30 秒一次。Java 是运行 Neo4j 的外围依赖，连接失败时请对照其安装要求检查；当前云端主流程无需安装 Ollama。
+
+## 直接导入仓库中的完整知识图谱（推荐）
+
+`graph_snapshot/` 来自本地已构建的浙江 2019–2024 年图谱，包含 **317,582 个节点、1,499,418 条关系**，其中录取事实 116,451 条、计划事实 78,246 条；标签/关系类型数量、生成时间和 SHA-256 见 [manifest.json](graph_snapshot/manifest.json)。原始来源文件、工作表、行号和来源哈希随事实保留，缺失与冲突标记也会保留。
+
+这是 **gzip 压缩 JSON Lines 逻辑快照**，包含节点、关系、属性和项目索引/约束。它使用项目脚本通过 Neo4j HTTP 接口恢复，无需停库、APOC、Bolt 驱动或原始 Excel；**不能直接交给 `neo4j-admin database load`**。已在 Neo4j Community 2026.04.0 验证；脚本使用 Cypher 5，其他版本应先在空实例测试。
+
+1. 安装并启动 Neo4j，完成首次登录、设置自己的密码。
+2. 使用**专用于本项目的全新空数据库/实例**。Community 版可使用一个独立安装的数据目录，不要指向存有其他图谱的实例。
+3. 安装项目 Python 依赖，复制 `.env.example`，填写 Neo4j 配置。导入不需要 DeepSeek API Key，也不需要 OCR。
+4. 在项目根目录执行：
+
+```powershell
+# 只检查快照文件与内容，不连接数据库
+.\.venv\Scripts\python.exe scripts/graph_snapshot.py validate
+# 校验通过后，导入 .env 指定的空数据库
+.\.venv\Scripts\python.exe scripts/graph_snapshot.py import
+# 如机器内存较小，可调小单批写入量（默认2000）
+# .\.venv\Scripts\python.exe scripts/graph_snapshot.py import --batch-size 500
+```
+
+导入前校验两份压缩文件的 SHA-256、内容哈希和记录数量；随后分批创建节点及关系，恢复项目索引/约束，再核对总数、各标签与关系类型数量。**非空数据库直接拒绝，脚本没有自动删库选项**；不会导入 `system` 数据库、认证信息或原数据库的内部 ID。内部 ID 仅用于快照内连接，导入后会重新分配。
+
+导入约需数分钟，具体取决于磁盘、内存与 Neo4j 配置。如果中断或失败，目标库可能已有部分数据；请使用新的空库/独立实例重试，不要直接再次导入。导入期间 Dataset 标记为未就绪，成功后才恢复可用。详细格式与操作见 [快照说明](graph_snapshot/README.md)。
+
+完成后启动 Web 服务，在“环境与 API 配置”中确认“数据库已连接，图谱已就绪”，再生成推荐。**直接导入快照与下面从 Excel 重建二选一**，不需要重复执行。
+
+## 从自己的 Excel 重新构建知识图谱
 
 ### 准备资料
 
@@ -167,7 +210,7 @@ flowchart LR
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765
 ```
 
-可选桌面入口：先安装 `requirements-desktop.txt`，再运行 `desktop_app.py`。该入口保留，但尚未做 PyQt 窗口验收。健康检查 `/api/v1/health` 用于确认图数据库连接和功能配置；模型 `configured` 仅代表配置存在。
+可选桌面入口：先安装 `requirements-desktop.txt`，再运行 `desktop_app.py`。该入口保留，但尚未做 PyQt 窗口验收。`/api/v1/health` 为兼容健康接口，模型 `configured` 仅代表配置存在；登录后的 `/api/v1/setup/status` 提供独立的环境检查，`POST /api/v1/setup/verify-model` 手动验证模型访问。
 
 ## 推荐规则与数据范围
 
@@ -189,6 +232,7 @@ flowchart LR
 node tests/frontend_regression.cjs
 .\.venv\Scripts\python.exe scripts/check_secrets.py --history
 .\.venv\Scripts\python.exe scripts/rebuild_graph.py --validate --data-dir data_templates
+.\.venv\Scripts\python.exe scripts/graph_snapshot.py validate
 ```
 
 单元测试使用模拟服务，不要求真实模型调用。`verify_graph.py`、`verify_workflows.py`、`verify_subjects.py`、`verify_rank120000.py`、`verify_combinations.py` 是针对原完整浙江资料的真实数据库核验，不能把其固定数量断言用于少量合成模板。最新完整数据基线曾覆盖35种三门选科与15组条件，549次接口检查通过。
@@ -201,6 +245,7 @@ node tests/frontend_regression.cjs
 app/                     页面、API、图谱查询与推荐服务
 data/                    本地真实资料，不随Git发布
 data_templates/          14份合成Excel模板、字段契约和填写说明
+graph_snapshot/          完整浙江图谱逻辑快照、校验清单和导入说明
 docs/                    公开设计和数据说明；本机报告默认忽略
 scripts/                 重建、只读校验、示例准备和检查工具
 tests/                   单元与前端回归

@@ -67,6 +67,27 @@ async function main() {
   assert.match(rec.document.getElementById('recommendEmpty').querySelector('.empty-description').textContent,/冲稳保比例/); checks++;
   rec.testResult.meta.recommendation_version = 'preferences-v5'; rec.render();
   assert.match(rec.document.getElementById('recommendDiagnostics').textContent,/旧版筛选结果/); checks++;
+  const config = context(); load(config,'common.js');
+  const nodes = new Map();
+  function domNode() { return {textContent:'',children:[],disabled:false,handlers:{},classList:{toggle(){}},
+    append(...items) {this.children.push(...items);}, prepend(item) {this.children.unshift(item);},
+    replaceChildren(...items) {this.children=items;}, setAttribute(){},
+    addEventListener(event,handler) {this.handlers[event]=handler;}, showModal(){}, close(){}}; }
+  config.document.getElementById = (id) => {if(!nodes.has(id)) nodes.set(id,domNode());return nodes.get(id);};
+  config.document.createElement = domNode;
+  const component = {name:'测试组件',state:'missing',ready:false,title:'未填写',detail:'请配置',docs_url:'https://example.org/'};
+  let setup = {data_ready:false,components:{neo4j:{...component},ocr:{...component},deepseek:{...component,configured:false,verified:false}}};
+  config.api = async () => setup;
+  config.initConfigurationChecks();
+  await new Promise(setImmediate);
+  assert.equal(nodes.get('configurationVerify').disabled,true); checks++;
+  assert.match(nodes.get('mainContent').children[0].children[0].textContent,/API Key 未填写/); checks++;
+  assert.equal(nodes.get('configurationItems').children.length,3); checks++;
+  setup = {data_ready:true,components:{neo4j:{...component,state:'ok',ready:true},ocr:{...component,state:'ok',ready:true},deepseek:{...component,configured:true,verified:true,state:'ok'}}};
+  await nodes.get('configurationRefresh').handlers.click();
+  assert.equal(nodes.get('configurationVerify').disabled,false); checks++;
+  assert.match(nodes.get('mainContent').children[0].children[0].textContent,/API 验证通过/); checks++;
+  assert.equal(nodes.get('configurationBadge').textContent,'环境配置可用'); checks++;
   console.log(JSON.stringify({passed:true,checks}));
 }
 main().catch(error => { console.error(error); process.exitCode=1; });

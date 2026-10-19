@@ -372,6 +372,82 @@ function updateThemeIcon(theme) {
   }
 }
 
+// Shared diagnostics on every page; never place credentials in the DOM.
+function initConfigurationChecks() {
+  const dialog = document.getElementById("configurationDialog");
+  if (!dialog) return;
+  const badge = document.getElementById("configurationBadge");
+  const items = document.getElementById("configurationItems");
+  const refresh = document.getElementById("configurationRefresh");
+  const verify = document.getElementById("configurationVerify");
+  const banner = document.createElement("div");
+  banner.className = "configuration-banner";
+  banner.setAttribute("role", "status");
+  const summary = document.createElement("span");
+  summary.textContent = "正在检查 API Key 与外围软件配置…";
+  const open = document.createElement("button");
+  open.className = "btn btn-ghost btn-sm";
+  open.textContent = "查看配置";
+  const show = () => dialog.showModal();
+  open.addEventListener("click", show);
+  banner.append(summary, open);
+  document.getElementById("mainContent")?.prepend(banner);
+  document.getElementById("configurationOpen").addEventListener("click", show);
+  document.getElementById("configurationClose").addEventListener("click", () => dialog.close());
+  let status;
+  function render() {
+    const components = status.components;
+    items.replaceChildren();
+    ["neo4j", "deepseek", "ocr"].forEach((key) => {
+      const component = components[key];
+      const section = document.createElement("section");
+      section.className = "configuration-item";
+      const heading = document.createElement("h3");
+      heading.textContent = component.name;
+      const chip = document.createElement("span");
+      chip.className = "chip " + (component.state === "ok" ? "chip-success" : component.state === "error" ? "chip-error" : "chip-warning");
+      chip.textContent = component.title;
+      const detail = document.createElement("p");
+      detail.className = "field-help";
+      detail.textContent = component.detail;
+      const link = document.createElement("a");
+      link.textContent = "安装 / 配置说明 ↗";
+      link.href = component.docs_url;
+      link.target = "_blank"; link.rel = "noopener noreferrer";
+      section.append(heading, chip, detail, link);
+      items.append(section);
+    });
+    const model = components.deepseek;
+    const good = status.data_ready && model.verified && components.ocr.ready;
+    summary.textContent = (status.data_ready ? "图谱已就绪" : "图谱需配置") + " · " + (model.verified ? "API 验证通过" : model.state === "error" ? "API 连接待修复" : model.configured ? "API Key 已填写（待验证）" : "API Key 未填写") + " · " + (components.ocr.ready ? "OCR 可用" : "OCR 待配置（可选）");
+    badge.textContent = good ? "环境配置可用" : "环境与 API 配置";
+    banner.classList.toggle("configuration-warning", !status.data_ready || !model.configured);
+    verify.disabled = !model.configured;
+  }
+  async function load() {
+    refresh.disabled = true;
+    try {
+      status = await api("/api/v1/setup/status");
+      render();
+    } catch (error) {
+      badge.textContent = "配置检查失败";
+      summary.textContent = "环境检查失败，请查看配置。";
+      items.textContent = error.message;
+    } finally { refresh.disabled = false; }
+  }
+  refresh.addEventListener("click", load);
+  verify.addEventListener("click", async () => {
+    if (!status) return;
+    verify.disabled = true; verify.textContent = "验证中…";
+    try {
+      status.components.deepseek = await api("/api/v1/setup/verify-model", "POST");
+      render();
+    } catch (error) { showToast(error.message, "error"); }
+    finally { verify.disabled = !status?.components.deepseek.configured; verify.textContent = "验证 API 连接"; }
+  });
+  load();
+}
+
 // ── Init ──
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -384,6 +460,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("toastContainer").setAttribute("aria-live", "polite");
   initSidebar();
   initThemeToggle();
+  initConfigurationChecks();
   window.addEventListener("themechange", refreshChartColors);
   if (typeof ResizeObserver !== "undefined") {
     const observer = new ResizeObserver(function (entries) {

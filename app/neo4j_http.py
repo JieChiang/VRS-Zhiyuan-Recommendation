@@ -7,7 +7,8 @@ from urllib.request import Request, urlopen
 
 
 class Neo4jHttpClient:
-    def __init__(self, base_url: str, username: str, password: str, database: str = "neo4j") -> None:
+    def __init__(self, base_url: str, username: str, password: str, database: str = "neo4j", timeout: int = 60) -> None:
+        self.timeout = timeout
         self.url = f"{base_url.rstrip('/')}/db/{database}/tx/commit"
         token = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
         self.headers = {
@@ -29,7 +30,7 @@ class Neo4jHttpClient:
             data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
             headers=self.headers,
         )
-        with urlopen(req, timeout=60) as resp:
+        with urlopen(req, timeout=self.timeout) as resp:
             result = json.loads(resp.read().decode("utf-8"))
         if result.get("errors"):
             raise RuntimeError(result["errors"][0]["message"])
