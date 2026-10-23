@@ -4,15 +4,14 @@ __pycache__/
 venv/
 .env
 .env.*
-!.env.example
 *.pem
 *.key
 .claude/
 .codex/
 /.vscode/*
 !/.vscode/tasks.json
-storage/*.db
-storage/*.db-*
+/storage/
+/启动项目.bat
 *.dump
 *.log
 .pytest_cache/
@@ -25,5 +24,6 @@ storage/*.db-*
 !/docs/数据模板说明.md
 !/docs/发布说明.md
 !/docs/README.md
+!/docs/桌面版说明.md
 /data_templates.zip
 *.inspect.ndjson

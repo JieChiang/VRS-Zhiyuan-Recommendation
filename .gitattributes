@@ -1,0 +1,2 @@
+# Windows cmd.exe launchers require CRLF, including UTF-8 launchers.
+*.bat text eol=crlf

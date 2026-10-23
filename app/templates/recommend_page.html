@@ -59,6 +59,15 @@
             <button id="resetFilters" class="btn btn-sm btn-ghost">清除筛选</button>
           </div>
           <p id="recommendCount" role="status" aria-live="polite"></p>
+          <div class="recommend-export-bar mb-3" aria-label="导出推荐方案">
+            <label class="form-label" for="exportScope">导出范围</label>
+            <select id="exportScope" class="form-select">
+              <option value="visible">当前筛选结果</option>
+              <option value="all">全部推荐结果</option>
+            </select>
+            <button id="exportRecommendationsBtn" class="btn btn-secondary btn-sm" disabled>导出 Excel</button>
+            <span id="exportHint" class="field-help" aria-live="polite">生成推荐后可导出</span>
+          </div>
           <div style="position:relative;" id="recommendListArea">
             <div id="recommendEmpty" class="empty-state">
               <div class="empty-icon">&#128270;</div>

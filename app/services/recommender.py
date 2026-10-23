@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from datetime import datetime, timezone
 from typing import Any
 
 from app.models import AdjustRequest, RecommendationRequest
@@ -216,6 +217,8 @@ class RecommenderService:
                               selected_subjects=sorted(selected_subjects(req.subject_combo or "")),
                               qualification_note="原表明确不限或匹配计划中的空白要求表示不限选科；没有匹配计划不等于不限。其他要求按完整选科核验，资料不足的候选待核实。批次和科类原表未注明。")
         layers["target_hits"] = target_hits[: req.target_count]
+        layers["meta"]["input_snapshot"] = req.model_dump()
+        layers["meta"]["generated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
         layers["candidates"] = candidates[:max(200, req.target_count)]
         layers["pending_candidates"] = pending if len(subjects) == 3 else []
         return layers

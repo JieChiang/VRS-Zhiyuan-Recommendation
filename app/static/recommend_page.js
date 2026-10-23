@@ -5,6 +5,83 @@ const filters = {
 };
 let drawerTrigger = null;
 let detailRequestId = 0;
+let exportInProgress = false;
+
+function currentRecommendationFilters() {
+  return {
+    keyword: $("recommendSearch").value.trim(), layer: $("layerFilter").value,
+    level: filters.level || "", nature: filters.nature || "",
+  };
+}
+
+function filteredRecommendations(all, selection = currentRecommendationFilters()) {
+  const keyword = selection.keyword.toLowerCase();
+  return all.filter((x) => {
+    const level = String(x.level || "");
+    const nature = String(x.school_nature || "");
+    return (!selection.level || (selection.level === "college" ? level.includes("专科") : level.includes("本科"))) &&
+      (!selection.nature || (selection.nature === "public" ? nature.includes("公办") : nature.includes("民办"))) &&
+      (!selection.layer || x.layer === selection.layer) && (!keyword || `${x.institution} ${x.major}`.toLowerCase().includes(keyword));
+  });
+}
+
+function recommendationExportPayload() {
+  const result = getState(STORAGE_KEYS.recommendResult, {});
+  const all = result.all || [];
+  const selection = currentRecommendationFilters();
+  const scope = $("exportScope").value;
+  return {
+    items: scope === "all" ? all : filteredRecommendations(all, selection),
+    meta: result.meta || {}, scope, total_count: all.length, filters: selection,
+  };
+}
+
+function syncExportControls() {
+  const count = recommendationExportPayload().items.length;
+  $("exportRecommendationsBtn").disabled = exportInProgress || !count;
+  $("exportHint").textContent = count
+    ? `导出 ${count} 条，附生成条件和来源；单列待核实记录不包含在内。`
+    : "当前范围没有可导出的推荐，请生成推荐或调整筛选。";
+}
+
+async function exportRecommendations() {
+  if (exportInProgress) return;
+  const payload = recommendationExportPayload();
+  if (!payload.items.length) { showToast("当前范围没有可导出的推荐", "warning"); return; }
+  const btn = $("exportRecommendationsBtn");
+  exportInProgress = true;
+  btn.disabled = true;
+  btn.textContent = "正在导出…";
+  try {
+    const response = await fetch("/api/v1/recommend/export", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+    });
+    if (response.status === 401 || response.redirected) throw new Error("登录已过期，请重新登录后导出");
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(typeof error.detail === "string" ? error.detail : `导出失败（${response.status}），请重新生成推荐后重试`);
+    }
+    if (!(response.headers.get("content-type") || "").includes("spreadsheetml.sheet")) {
+      throw new Error("服务返回格式异常，请刷新后重试");
+    }
+    const url = URL.createObjectURL(await response.blob());
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `VRS-推荐方案-${payload.scope === "all" ? "全部" : "筛选"}-${payload.items.length}条.xlsx`;
+    document.body.appendChild(link);
+    try { link.click(); } finally {
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    showToast(`已生成 ${payload.items.length} 条推荐的 Excel 文件`, "success");
+  } catch (err) {
+    showToast("导出失败：" + err.message, "error");
+  } finally {
+    exportInProgress = false;
+    btn.textContent = "导出 Excel";
+    syncExportControls();
+  }
+}
 
 function parseMeta(raw) {
   if (!raw) return {};
@@ -76,15 +153,8 @@ function render() {
     .map(([n, label]) => `<div class="summary-tile"><b>${n}</b><span>${label}</span></div>`).join("");
   const list = $("recommendList");
   list.innerHTML = "";
-  const keyword = $("recommendSearch").value.trim().toLowerCase();
-  const layer = $("layerFilter").value;
-  const filtered = all.filter((x) => {
-    const level = String(x.level || "");
-    const nature = String(x.school_nature || "");
-    return (!filters.level || (filters.level === "college" ? level.includes("专科") : level.includes("本科"))) &&
-      (!filters.nature || (filters.nature === "public" ? nature.includes("公办") : nature.includes("民办"))) &&
-      (!layer || x.layer === layer) && (!keyword || `${x.institution} ${x.major}`.toLowerCase().includes(keyword));
-  });
+  const filtered = filteredRecommendations(all);
+  syncExportControls();
   $("recommendCount").textContent = `显示 ${filtered.length} / ${all.length} 条 · 已选对比 ${compareList.length} 条`;
   toggleEmptyState("recommendList", filtered.length === 0);
   const generated = !!meta.recommendation_version;
@@ -554,6 +624,8 @@ window.addEventListener("DOMContentLoaded", () => {
   );
   render();
   $("regenerateBtn").addEventListener("click", regenerateRecommendations);
+  $("exportRecommendationsBtn").addEventListener("click", exportRecommendations);
+  $("exportScope").addEventListener("change", syncExportControls);
   // 院校属性保留数据库原值；缺失内容显示为待核实，避免自动调用模型猜测。
   bindFilterButtons();
   initTabs();

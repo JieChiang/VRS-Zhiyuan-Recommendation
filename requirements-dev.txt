@@ -1,0 +1,3 @@
+-r requirements.txt
+# 可选的离线浏览器流程验收；生产服务不需要。
+playwright==1.64.1

@@ -1661,3 +1661,12 @@ a:hover { color: var(--color-primary-hover); text-decoration: underline; }
 #recommendList { max-height: none; overflow: visible; }
 .page-compare_page #compareChartsArea:not(.has-data) .compare-chart-block,
 .page-compare_page #compareChartsArea:not(.has-data) > h3 { display: none; }
+.recommend-export-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.recommend-export-bar .form-label { margin: 0; }
+.recommend-export-bar .form-select { width: auto; max-width: 100%; }
+.recommend-export-bar .field-help { margin: 0; flex: 1 1 240px; }

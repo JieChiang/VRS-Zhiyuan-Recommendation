@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, Query, Request, UploadFile
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -35,6 +35,7 @@ from app.services.deepseek_local import OllamaService
 from app.services.configuration import ConfigurationChecks
 from app.services.kg_service import KgService
 from app.services.recommender import RecommenderService
+from app.services.recommendation_export import RecommendationExportRequest, XLSX_TYPE, build_recommendation_workbook
 from app.storage import LocalStorage
 
 
@@ -218,6 +219,18 @@ def recommend_adjust(payload: AdjustRequest) -> Dict[str, Any]:
         return recommender_service.adjust(payload)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"重算失败: {exc}") from exc
+
+
+@app.post("/api/v1/recommend/export")
+def recommend_export(payload: RecommendationExportRequest, request: Request) -> Response:
+    if not is_login(request):
+        raise HTTPException(status_code=401, detail="请先登录后导出")
+    return Response(
+        content=build_recommendation_workbook(payload),
+        media_type=XLSX_TYPE,
+        headers={"Content-Disposition": 'attachment; filename="VRS-recommendations.xlsx"',
+                 "Cache-Control": "no-store"},
+    )
 
 
 @app.post("/api/v1/recommend/enrich")

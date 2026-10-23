@@ -9,7 +9,7 @@ PATTERNS = {
     "private_key": re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     "password_assignment": re.compile(rb"(?im)^[ \t]*(?:NEO4J_PASSWORD[ \t]*=|password[ \t]*:)[ \t]*[\"']?([^ \t\r\n\"'#]+)[\"']?[ \t\r]*(?:#.*)?$"),
 }
-TEXT = {".py", ".js", ".cjs", ".mjs", ".md", ".txt", ".json", ".yaml", ".yml", ".html", ".example", ".env", ".toml", ".sh", ".ps1"}
+TEXT = {".py", ".js", ".cjs", ".mjs", ".md", ".txt", ".json", ".yaml", ".yml", ".html", ".example", ".env", ".toml", ".sh", ".ps1", ".bat", ".cmd", ".ini", ".cfg"}
 
 
 def findings(raw):

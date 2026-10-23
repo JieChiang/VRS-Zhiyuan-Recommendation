@@ -31,7 +31,7 @@ class ReleaseTests(unittest.TestCase):
             self.assertEqual(os.environ['TEST_VRS_VALUE'],'process')
 
     def test_public_configuration_has_no_credentials(self):
-        for path in ['.env.example','setting.yaml']:
+        for path in ['README.md','setting.yaml']:
             self.assertEqual(findings((ROOT/path).read_bytes()),[],path)
 
     def test_templates_match_the_schema_and_preserve_text_codes(self):
