@@ -37,7 +37,7 @@ def _load_yaml_config(project_root: Path) -> Dict[str, Any]:
         if isinstance(data, dict):
             return data
         return {}
-    except Exception:
+    except (OSError, ValueError, yaml.YAMLError):
         return {}
 
 
